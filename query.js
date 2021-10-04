@@ -107,8 +107,9 @@ const submitQuota = async ( username, quotaToday ) => {
                             daily: quotaToday, 
                             date_added: date,
                             total_slp_today: total,
-                            $position: 0
-                        } 
+                            
+                        } ,
+                        $position: 0
                     }
             }
     
