@@ -3,7 +3,7 @@ const app = require('express')();
 const port = process.env.PORT || 5100;
 const cors = require('cors');
 const env = require('dotenv');
-const { register, login, findUser, submitQuota } = require('./query');
+const { register, login, findUser, submitQuota, getQuotaList } = require('./query');
 env.config();
 
 app.use(cors());
@@ -27,6 +27,15 @@ app.post('/login', async (req, res) => {
     const result = await login(username, password)
 
     res.json({ result })
+} )
+
+app.get('/quota-list/:username', async (req, res) => {
+    const username = req.params.username
+
+    const result = await getQuotaList(username)
+
+    res.json(result)
+
 } )
 
 app.post('/submit-quota', async (req, res) => {

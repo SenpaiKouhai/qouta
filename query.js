@@ -75,6 +75,20 @@ const login = async (username, pass) => {
     }
 }
 
+const getQuotaList = async (username) => {
+    await ConnectDB();
+    try {
+        console.log("Finding User")
+        let user = await User.findOne({ username: username }).select("-password")
+
+        return { success: true, user: user }
+
+    } catch (e) {
+        console.log(e)
+        return { success: false, msg: "There was an error connecting to database.", e: e }
+    }
+}
+
 const submitQuota = async ( username, quotaToday ) => {
     await ConnectDB();
     try {
@@ -145,4 +159,4 @@ const updateSlp = async (username, slp) => {
     return { success: true, user }
 }
 
-module.exports = { register, login, submitQuota , findUser }
+module.exports = { register, login, submitQuota , findUser, getQuotaList }
