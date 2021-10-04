@@ -101,7 +101,7 @@ const submitQuota = async ( username, quotaToday ) => {
             console.log("Calculating quota...")
             const total = Number(quotaToday) + Number(user.total_slp)
             const value = {$set: { total_slp: total }, 
-                $addToSet: 
+                $push: 
                     {
                         quota: { 
                             daily: quotaToday, 
