@@ -14,12 +14,6 @@ app.get('/favicon.ico', (req, res) => {
     res.status(204);
 } )
 
-app.get('/', async (req, res) => {
-    const result = await findUser()
-
-    res.json({ result })
-} )
-
 app.post('/register', async (req, res) => {
     const { role, total_slp, user } = req.body
     const result = await register(role, total_slp, user)
