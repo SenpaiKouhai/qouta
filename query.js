@@ -74,28 +74,37 @@ const login = async (username, pass) => {
     }
 }
 
+const submitQuota = async ( username, quotaToday ) => {
+    await ConnectDB();
+    try {
+        console.log("Finding the user...")
+        const filter = { username: username }
+        const date = new Date();
+        const user = await User.findOne(filter);
+        if(user) {
+            console.log("Calculating quota...")
+            const total = Number(quotaToday) + Number(user.total_slp)
+            const value = {$set: { total_slp: total }, 
+                $addToSet: 
+                    {
+                        quota: { 
+                            daily: quotaToday, 
+                            date_added: date.toISOString().slice(0,10),
+                            total_slp_today: total
+                        } 
+                    }
+            }
+    
+            let res = await User.findOneAndUpdate(filter, value, { new: true }).select("-password")
+            return { success: true, user: res }
+        }
+        
+        return { success: false, msg: "User not found" }
 
-const insert = async (name) => {
-    let result = null;
-    const exist = await User.findOne({ username: name });
-    console.log(exist)
-    if(exist) {
-        result = { success: false, msg: "User already exist" }
-        return result;
+    } catch (e) {
+        console.log(e)
+        return { success: false, msg: "There was an error connecting to database.", e: e }
     }
-
-    const value = {
-        username: name,
-        total_slp: 0
-    }
-    const user = new User(value);
-    await user.save().then( (user) => {
-        result = user
-    } )
-    .catch( err => { 
-        result = { success: false, error: err, msg: "Something went wrong in mongodb server" }
-    } )
-    return result;
 }
 
 const dailyQouta = async (username, qouta, total_slp) => {
@@ -134,4 +143,4 @@ const updateSlp = async (username, slp) => {
     return { success: true, user }
 }
 
-module.exports = { register, login, insert, updateSlp, dailyQouta, findUser }
+module.exports = { register, login, submitQuota , findUser }
