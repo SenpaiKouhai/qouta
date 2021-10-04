@@ -1,6 +1,7 @@
 const ConnectDB  = require('./db/dbcon');
 const bcrypt = require('bcrypt')
 const User = require('./db/model')
+const moment = require('module')
 
 const findUser = async () => {
     await ConnectDB()
@@ -79,7 +80,8 @@ const submitQuota = async ( username, quotaToday ) => {
     try {
         console.log("Finding the user...")
         const filter = { username: username }
-        const date = new Date();
+        // const date = new Date();
+        const date = moment().format('ll')
         const user = await User.findOne(filter);
         if(user) {
             console.log("Calculating quota...")
@@ -89,7 +91,7 @@ const submitQuota = async ( username, quotaToday ) => {
                     {
                         quota: { 
                             daily: quotaToday, 
-                            date_added: date.toISOString().slice(0,10),
+                            date_added: date,
                             total_slp_today: total
                         } 
                     }
