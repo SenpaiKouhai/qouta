@@ -40,7 +40,7 @@ const register = async (role, total_slp, user) => {
         return { success: true, newUser: newUser.username, msg: "User successfully added" }
     } catch (e) {
         console.log(e)
-        return { success: false, msg: e, from: "Catch" }
+        return { success: false, msg: "There was an error connecting to database.", e: e }
     }
 }
 
@@ -66,10 +66,11 @@ const login = async (username, pass) => {
             }
         } else {
             // user doesn't exist
+            return { success: false, msg: "Username doesn't exist" }
         }
     } catch (e) {
         console.log(e)
-        return { success: false, msg: e, from: "Catch" }
+        return { success: false, msg: "There was an error connecting to database.", e: e }
     }
 }
 
