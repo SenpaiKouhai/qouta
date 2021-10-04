@@ -104,12 +104,14 @@ const submitQuota = async ( username, quotaToday ) => {
                 $addToSet: 
                     {
                         quota: { 
-                            daily: quotaToday, 
-                            date_added: date,
-                            total_slp_today: total,
-                            
-                        } ,
-                        $position: 0
+                            $each: {
+                                daily: quotaToday, 
+                                date_added: date,
+                                total_slp_today: total,
+                                
+                            }, 
+                            $position: 0
+                        }
                     }
             }
     
