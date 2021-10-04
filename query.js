@@ -2,6 +2,16 @@ const ConnectDB  = require('./db/dbcon');
 const bcrypt = require('bcrypt')
 const User = require('./db/model')
 
+const findUser = async () => {
+    await ConnectDB()
+    try {
+        let user = await User.find({})
+        return user
+    } catch (e) {
+        return { e: e }
+    }
+}
+
 const register = async (role, total_slp, user) => {
     await ConnectDB();
     try {
@@ -63,20 +73,6 @@ const login = async (username, pass) => {
     }
 }
 
-const findUser = async (col, name) => {
-    await ConnectDB();
-    // const collection = await db.collection("qouta");
-    const user = await User.findOne({ username: name });
-    // return true if user exist
-    return user !== null ? true : false;
-}
-
-const findAll = async () => {
-    await ConnectDB();
-    // const collection = await db.collection("qouta");
-    const users = await User.find({ });
-    return users;
-}
 
 const insert = async (name) => {
     let result = null;
@@ -137,4 +133,4 @@ const updateSlp = async (username, slp) => {
     return { success: true, user }
 }
 
-module.exports = { register, login, findAll, insert, updateSlp, dailyQouta, findUser }
+module.exports = { register, login, insert, updateSlp, dailyQouta, findUser }

@@ -3,7 +3,7 @@ const app = require('express')();
 const port = process.env.PORT || 5100;
 const cors = require('cors');
 const env = require('dotenv');
-const { register, login } = require('./query');
+const { register, login, findUser } = require('./query');
 env.config();
 
 app.use(cors());
@@ -12,6 +12,12 @@ app.use(express.urlencoded({ extended: false }));
 
 app.get('/favicon.ico', (req, res) => {
     res.status(204);
+} )
+
+app.get('/', (req, res) => {
+    const result = await findUser()
+
+    res.json({ result })
 } )
 
 app.post('/register', async (req, res) => {
