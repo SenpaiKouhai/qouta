@@ -14,7 +14,7 @@ app.get('/favicon.ico', (req, res) => {
     res.status(204);
 } )
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     const result = await findUser()
 
     res.json({ result })
