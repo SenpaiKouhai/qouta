@@ -1,7 +1,7 @@
 const ConnectDB  = require('./db/dbcon');
 const bcrypt = require('bcrypt')
 const User = require('./db/model')
-const moment = require('module')
+const moment = require('moment')
 
 const findUser = async () => {
     await ConnectDB()
