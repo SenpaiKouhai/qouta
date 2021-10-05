@@ -148,7 +148,6 @@ const resubmitQuota = async ( username, date_added, editQuota ) => {
                         }
                     }
             }
-    
             let res = await User.findOneAndUpdate(filter, value, { new: true }).select("-password")
             return { success: true, user: res }
         }
