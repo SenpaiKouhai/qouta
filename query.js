@@ -131,7 +131,6 @@ const resubmitQuota = async ( username, date_added, editQuota ) => {
     try {
         console.log("Finding the user...")
         const filter = { username: username, "quota.date_added": date_added }
-        const date = moment().format('ll')
         const user = await User.findOne(filter);
         if(user) {
             console.log("Calculating quota...")
@@ -142,8 +141,8 @@ const resubmitQuota = async ( username, date_added, editQuota ) => {
                 $set: 
                     {
                         quota: { 
-                            daily: quotaToday, 
-                            date_added: date,
+                            daily: editQuota, 
+                            date_added: date_added,
                             total_slp_today: total 
                         }
                     }
