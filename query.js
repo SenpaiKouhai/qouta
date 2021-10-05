@@ -94,7 +94,6 @@ const submitQuota = async ( username, quotaToday ) => {
     try {
         console.log("Finding the user...")
         const filter = { username: username }
-        // const date = new Date();
         const date = moment().format('ll')
         const user = await User.findOne(filter);
         if(user) {
@@ -111,6 +110,41 @@ const submitQuota = async ( username, quotaToday ) => {
                             }],
                             $position: 0
                             
+                        }
+                    }
+            }
+    
+            let res = await User.findOneAndUpdate(filter, value, { new: true }).select("-password")
+            return { success: true, user: res }
+        }
+        
+        return { success: false, msg: "User not found" }
+
+    } catch (e) {
+        console.log(e)
+        return { success: false, msg: "There was an error connecting to database.", e: e }
+    }
+}
+
+const resubmitQuota = async ( username, date_added, editQuota ) => {
+    await ConnectDB();
+    try {
+        console.log("Finding the user...")
+        const filter = { username: username, "quota.date_added": date_added }
+        const date = moment().format('ll')
+        const user = await User.findOne(filter);
+        if(user) {
+            console.log("Calculating quota...")
+            // less the added quota earlier
+            const prevQuota = Number(user.total_slp) - Number(user.quota[0].daily)
+            const total = Number(editQuota) + Number(prevQuota)
+            const value = {$set: { total_slp: total }, 
+                $set: 
+                    {
+                        quota: { 
+                            daily: quotaToday, 
+                            date_added: date,
+                            total_slp_today: total 
                         }
                     }
             }
@@ -163,4 +197,4 @@ const updateSlp = async (username, slp) => {
     return { success: true, user }
 }
 
-module.exports = { register, login, submitQuota , findUser, getQuotaList }
+module.exports = { register, login, submitQuota, resubmitQuota, findUser, getQuotaList }
