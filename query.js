@@ -79,9 +79,13 @@ const getQuotaList = async (username) => {
     await ConnectDB();
     try {
         console.log("Finding User")
-        let user = await User.findOne({ username: username }).select("-password")
+        let user = await User.findOne({ username: username }, { quota: { $slice: 3 } }).select("-password")
+        if(user) {
 
-        return { success: true, user: user }
+            return { success: true, user: user }
+        }
+
+        return { success: false, msg: "Cannot find user", e: e }
 
     } catch (e) {
         console.log(e)
