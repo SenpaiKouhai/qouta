@@ -140,10 +140,10 @@ const resubmitQuota = async ( username, date_added, editQuota ) => {
             const value = {$set: { total_slp: total }, 
                 $set: 
                     {
-                        quota: { 
-                            'quota.$.daily': editQuota, 
-                            'quota.$.date_added': date_added,
-                            'quota.$.total_slp_today': total 
+                        'quota.0': { 
+                            quota: editQuota, 
+                            date_added: date_added,
+                            total_slp_today: total 
                         }
                     }
             }
