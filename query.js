@@ -75,17 +75,17 @@ const login = async (username, pass) => {
     }
 }
 
-const getQuotaList = async (username) => {
+const getQuotaList = async (username, number) => {
     await ConnectDB();
     try {
         console.log("Finding User")
-        let user = await User.findOne({ username: username }, { quota: { $slice: 3 } }).select("-password")
+        let user = await User.findOne({ username: username }, { quota: { $slice: number } }).select("-password")
         if(user) {
 
             return { success: true, user: user }
         }
 
-        return { success: false, msg: "Cannot find user", e: e }
+        return { success: false, msg: "Cannot find user" }
 
     } catch (e) {
         console.log(e)
@@ -134,14 +134,16 @@ const resubmitQuota = async ( username, date_added, editQuota ) => {
     await ConnectDB();
     try {
         console.log("Finding the user...")
-        const filter = { username: username, "quota.date_added": date_added }
+        const filter = { username: username }
         const user = await User.findOne(filter);
         if(user) {
             console.log("Calculating quota...")
             // less the added quota earlier
             const prevQuota = Number(user.total_slp) - Number(user.quota[0].daily)
+            console.log(prevQuota)
             const total = Number(editQuota) + Number(prevQuota)
-            const value = {$set: { total_slp: total }, 
+            const updateTotal = {$set: { total_slp: total }}
+            const value = {
                 $set: 
                     {
                         'quota.0': { 
@@ -151,7 +153,8 @@ const resubmitQuota = async ( username, date_added, editQuota ) => {
                         }
                     }
             }
-            let res = await User.findOneAndUpdate(filter, value, { new: true }).select("-password")
+            await User.findOneAndUpdate(filter, value, { new: true })
+            let res = await User.findOneAndUpdate(filter, updateTotal, { new: true } ).select("-password")
             return { success: true, user: res }
         }
         

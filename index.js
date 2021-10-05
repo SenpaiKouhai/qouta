@@ -29,10 +29,10 @@ app.post('/login', async (req, res) => {
     res.json({ result })
 } )
 
-app.get('/quota-list/:username', async (req, res) => {
+app.get('/quota-list/:username/:number', async (req, res) => {
     const username = req.params.username
-
-    const result = await getQuotaList(username)
+    const number = req.params.number
+    const result = await getQuotaList(username, Number(number))
 
     res.json(result)
 
